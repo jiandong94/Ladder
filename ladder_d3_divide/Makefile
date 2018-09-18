@@ -11,7 +11,7 @@ LIBRARY_DIR=$(HOME)/itensor
 #    which includes debugging symbols and can be used in gdb (Gnu debugger);
 #APP = ladder
 #APP= ladder_spinful_d2_divide
-APP= ladder_spinful_d3_divide
+APP= ladder_spinful_d2_divide
 #APP= ladder_spinful_d2
 #APP= ladder_spinful_d3
 

@@ -1,5 +1,5 @@
 #include "itensor/all.h"
-#include "itensor/mps/sites/hubbard_d3_divide.h"
+#include "hubbard_d3_divide.h"
 #include <cmath>
 #include <complex>
 #include <fstream>
@@ -7,7 +7,7 @@
 #include <time.h>
 #include <omp.h>
 using namespace itensor;
-#define PI 3.14159265357
+#define PI 3.141592653589793
 double get_wall_time()
 {
 	struct timeval time;
@@ -18,9 +18,10 @@ double get_wall_time()
 	return (double)time.tv_sec + (double)time.tv_usec * 0.000001;
 }
 
-int correlation_function(IQMPS psi, SiteSet sites, const std::string& StrOp1, const std::string& StrOp2, CMatrix& CorreFun, int Down, const int N, const std::string& outFile)
+int correlation_function(IQMPS psi, SiteSet sites, const std::string& StrOp1, const std::string& StrOp2, CMatrix& CorreFun, int Down, int begin, int end, const int N, const std::string& outFile)
 {
-#pragma omp parallel for 
+//#pragma omp parallel for 
+	int K;
 	for(int i=Down+1;i<=N-2;i+=2)
 	{
 		IQMPS newPsi = psi;
@@ -30,8 +31,20 @@ int correlation_function(IQMPS psi, SiteSet sites, const std::string& StrOp1, co
 		C *= Op1;
 		auto ir = commonIndex(newPsi.A(i),newPsi.A(i+1),Link);
 		C *= dag(prime(newPsi.A(i),Site,ir));
-		//C *= dag(prime(prime(psi.A(i),Site),ir)); // A*Op1*A_star 
-		for(int j=i+2;j<=N;j+=2)
+		//C *= dag(prime(prime(psi.A(i),Site),ir)); // A*Op1*A_star
+		if(i >= Down+(begin*2-1) and i <= Down+(end*2-1))
+		{
+			K = N;
+		}
+		else if(i > N-4)
+		{
+			K = i+2;
+		}
+		else
+		{
+			K = i+4;
+		}
+		for(int j=i+2;j<=K;j+=2)
 		{
 			auto Op2 = sites.op(StrOp2,j);
 			if(j == i+2)
@@ -98,6 +111,8 @@ int main(int argc, char* argv[])
     auto table = InputGroup(input,"sweeps");
     auto sweeps = Sweeps(nsweeps,table);
 	
+    auto begin = input.getInt("begin");
+    auto end = input.getInt("end");
 	auto BudagBuPath = input.getString("BudagBuPath");
 	auto BuBudagPath = input.getString("BuBudagPath");
 	auto BddagBdPath = input.getString("BddagBdPath");
@@ -159,9 +174,9 @@ int main(int argc, char* argv[])
 	}
 	for(int i = 1; i<=N-1; i+=2)
 		{
-        ampo += Uuu/2,"Nup",i,"Nup",i;
+		ampo += Uuu/2,"Nup",i,"Nup",i;
 		ampo += -Uuu/2,"Nup",i;
-        ampo += Udd/2,"Ndn",i+1,"Ndn",i+1;
+		ampo += Udd/2,"Ndn",i+1,"Ndn",i+1;
 		ampo += -Udd/2,"Ndn",i+1;
 		ampo += -Uud/2,"Nup",i,"Ndn",i+1;
 		}
@@ -318,30 +333,30 @@ int main(int argc, char* argv[])
 
 //-------------  Correlation Functions ------------------
 	double startTime = get_wall_time();
-	omp_set_num_threads(4);
 	CMatrix CorreFunBudagBu(N/2,N/2);
 	auto StrOp1 = "Bupdag";
 	auto StrOp2 = "Bup";
 	auto Down = 0;
+//omp_set_num_threads(4);
 	
-	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBudagBu, Down, N, BudagBuPath);
+	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBudagBu, Down, begin, end, N, BudagBuPath);
 	
 	
 	CMatrix CorreFunBuBudag(N/2,N/2);
 	StrOp1 = "Bup";
 	StrOp2 = "Bupdag";
-	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBuBudag, Down, N, BuBudagPath);
+	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBuBudag, Down, begin, end, N, BuBudagPath);
 	
-	CMatrix CorreFunBddagBd(N/2,N/2);
-	StrOp1 = "Bdndag";
-	StrOp2 = "Bdn";
-	Down = 1;
-	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBddagBd, Down, N, BddagBdPath);
+	//CMatrix CorreFunBddagBd(N/2,N/2);
+	//StrOp1 = "Bdndag";
+	//StrOp2 = "Bdn";
+	//Down = 1;
+	//correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBddagBd, Down, begin, end, N, BddagBdPath);
 	
-	CMatrix CorreFunBdBddag(N/2,N/2);
-	StrOp1 = "Bdn";
-	StrOp2 = "Bdndag";
-	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBdBddag, Down, N, BdBddagPath);
+	//CMatrix CorreFunBdBddag(N/2,N/2);
+	//StrOp1 = "Bdn";
+	//StrOp2 = "Bdndag";
+	//correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBdBddag, Down, begin, end, N, BdBddagPath);
 	
 	double endTime = get_wall_time();
 	println("Correlation Functions Time : ", (double)(endTime-startTime), " s");

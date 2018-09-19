@@ -8,6 +8,8 @@
 #include <omp.h>
 using namespace itensor;
 #define PI 3.141592653589793
+
+// calculate time
 double get_wall_time()
 {
 	struct timeval time;
@@ -96,7 +98,7 @@ int main(int argc, char* argv[])
     auto N = input.getInt("N");
     auto Nup = input.getInt("Nup");
     auto Ndn = input.getInt("Ndn");
-    N = 2*N;
+    N = 2*N; // two components
     auto nsweeps = input.getInt("nsweeps");
     auto Jx = input.getReal("Jx");
     auto Jy = input.getReal("Jy");
@@ -122,18 +124,6 @@ int main(int argc, char* argv[])
 	auto NdnPath = input.getString("NdnPath");
 	
 	auto PBC = input.getYesNo("PBC");
-	//auto Nhalf = 6;
-	//auto N = 2*Nhalf;  
-    //auto sweeps = Sweeps(20);
-	//sweeps.maxm() = 1000;
-	//sweeps.minm() = 100;
-	//sweeps.cutoff() = 1E-14;
-    //auto Jx = 1.0;
-    //auto Jy = 1.0;
-    //auto U = 2.0;
-	//auto phi = 1.0/4.0*2*PI;
-	//auto phi = 1.57;
-	//auto quiet = true;
 
 
 	std::complex<double>im(0,1);
@@ -358,19 +348,8 @@ int main(int argc, char* argv[])
 	println("Correlation Functions Time : ", (double)(endTime-startTime), " s");
 	println("Correlation Functions:");
 	
-	//for(int i=1;i<=N/2-1;i++)
-	//{
-	//	for(int j=i+1;j<=N/2;j++)
-	//	{
-	//		println("(",i,",",j,")",CorreFunBudagBu(i-1,j-1));
-	//		println();
-	//	}
-	//}
-
-
 
     // Print the final energy reported by DMRG
-    //
     printfln("\nGround State Energy = %.10f",energy);
     return 0;
     }

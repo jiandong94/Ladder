@@ -60,6 +60,9 @@ $(APP)-g: mkdebugdir $(GOBJECTS) $(ITENSOR_GLIBS)
 clean:
 	rm -fr .debug_objs *.o $(APP) $(APP)-g
 
+cleanPH:
+	rm -rf PH_*
+
 mkdebugdir:
 	mkdir -p .debug_objs
 

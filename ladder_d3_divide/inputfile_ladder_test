@@ -1,8 +1,8 @@
 input
     {
-    N = 10 //2*N/2
-	Nup = 4
-	Ndn = 4
+    N = 12 //2*N/2
+	Nup = 3
+	Ndn = 0
     Jx = 1.0
 	Jy = 1.0
     begin = 1
@@ -10,9 +10,7 @@ input
 	Uuu = 10.0
     Udd = 10.0
     Uud = 5
-	phi = 0.2
-	//phi = 2.827433388231 //0.9
-	//phi = 2.513274122872 //0.8
+	phi = 0.4
 	PBC = no
 	BudagBuPath = ../Data/Test/CorreFunBudagBu.txt
 	BuBudagPath = ../Data/Test/CorreFunBuBudag.txt

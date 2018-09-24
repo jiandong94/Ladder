@@ -122,6 +122,7 @@ int main(int argc, char* argv[])
 	auto SvNPath = input.getString("SvNPath");
 	auto NupPath = input.getString("NupPath");
 	auto NdnPath = input.getString("NdnPath");
+	auto NupNupPath = input.getString("NupNupPath");
 	
 	auto PBC = input.getYesNo("PBC");
 
@@ -332,7 +333,14 @@ int main(int argc, char* argv[])
 	StrOp1 = "Bup";
 	StrOp2 = "Bupdag";
 	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBuBudag, Down, begin, end, N, BuBudagPath);
-	
+
+
+//  density-density correlation function
+//
+	CMatrix CorreFunNupNup(N/2,N/2);
+	StrOp1 = "Nup";
+	StrOp2 = "Nup";
+	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBuBudag, Down, begin, end, N, NupNupPath);
 	//CMatrix CorreFunBddagBd(N/2,N/2);
 	//StrOp1 = "Bdndag";
 	//StrOp2 = "Bdn";

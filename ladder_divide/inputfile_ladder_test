@@ -1,7 +1,7 @@
 input
     {
-    N = 120 //2*N/2
-	Nup = 60
+    N = 12 //2*N/2
+	Nup = 6
 	Ndn = 0
     Jx = 1.0
 	Jy = 1.0
@@ -16,6 +16,7 @@ input
 	BuBudagPath = ../Data/Test/CorreFunBuBudag.txt
 	BddagBdPath = ../Data/Test/CorreFunBddagBd.txt
 	BdBddagPath = ../Data/Test/CorreFunBdBddag.txt
+	NupNupPath = ../Data/Test/CorreFunNupNup.txt
 	SvNPath = ../Data/Test/SvN.txt
 	NupPath = ../Data/Test/Nup.txt
 	NdnPath = ../Data/Test/Ndn.txt

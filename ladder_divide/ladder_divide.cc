@@ -183,7 +183,7 @@ int main(int argc, char* argv[])
 		ampo += -Uuu/2,"Nup",i;
 		ampo += Udd/2,"Ndn",i+1,"Ndn",i+1;
 		ampo += -Udd/2,"Ndn",i+1;
-		ampo += -Uud/2,"Nup",i,"Ndn",i+1;
+		ampo += Uud/2,"Nup",i,"Ndn",i+1;
 		}
     for(int i = 1; i <= N-3; i += 4)
         {

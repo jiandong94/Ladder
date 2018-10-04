@@ -98,7 +98,6 @@ int random_initial_state(int L, int Nb, std::vector<int> &FillSite)
 		TotalSite.push_back(i+1);
 	}
 	random_shuffle(TotalSite.begin(), TotalSite.end());
-	println("ok");
 	FillSite.assign(TotalSite.begin(), TotalSite.begin()+Nb);
 	//std::copy(TotalSite.begin(),TotalSite.begin()+Nb,FillSite.begin());
 	return 0;
@@ -164,19 +163,19 @@ int main(int argc, char* argv[])
 		ampo += -Jx,"Bdndag",i+3,"Bdn",i+7;
 		ampo += -Jx,"Bdndag",i+7,"Bdn",i+3;
         }
-	if(PBC)
-	{
-		// PBC
-		ampo += -Jx,"Bupdag",1,"Bup",N-3;
-		ampo += -Jx,"Bupdag",N-3,"Bup",1;
-		ampo += -Jx,"Bdndag",2,"Bdn",N-2;
-		ampo += -Jx,"Bdndag",N-2,"Bdn",2;
-   
-		ampo += -Jx,"Bupdag",3,"Bup",N-1;
-		ampo += -Jx,"Bupdag",N-1,"Bup",3;
-		ampo += -Jx,"Bdndag",4,"Bdn",N;
-		ampo += -Jx,"Bdndag",N,"Bdn",4;
-	}
+	//if(PBC)
+	//{
+	//	// PBC
+	//	ampo += -Jx,"Bupdag",1,"Bup",N-3;
+	//	ampo += -Jx,"Bupdag",N-3,"Bup",1;
+	//	ampo += -Jx,"Bdndag",2,"Bdn",N-2;
+	//	ampo += -Jx,"Bdndag",N-2,"Bdn",2;
+   //
+	//	ampo += -Jx,"Bupdag",3,"Bup",N-1;
+	//	ampo += -Jx,"Bupdag",N-1,"Bup",3;
+	//	ampo += -Jx,"Bdndag",4,"Bdn",N;
+	//	ampo += -Jx,"Bdndag",N,"Bdn",4;
+	//}
 	for(int i = 1; i<=N-1; i+=2)
 		{
 		ampo += Uuu/2,"Nup",i,"Nup",i;
@@ -216,64 +215,6 @@ int main(int argc, char* argv[])
 		state.set(FillNdn[i]*2,"Dn");
    		println("Site ",FillNdn[i]*2," Dn");
 	}
-	/**
-	for(int i = 1;i <= N/2-1;i+=2)
-    {
-    	if(p == 0 and q == 0)
-    	{
-    		state.set(i,"Emp");
-    		state.set(i+1,"Emp");
-    		state.set(N-i,"Emp");
-    		state.set(N-i+1,"Emp");
-    	}
-		else
-		if(p == 0)
-		{
-			state.set(i,"Emp");
-			state.set(N-i,"Emp");
-		}
-		else
-		if(q == 0)
-		{
-			state.set(i+1,"Emp");
-			state.set(N-i+1,"Emp");
-		}
-    	if(p > 1)
-    	{
-    		println("Site ",i," Up");
-    		println("Site ",N-i," Up");
-    		state.set(i,"Up");
-    		state.set(N-i,"Up");
-    		p -= 2;
-    	}
-    	else
-    	if(p > 0)
-    	{
-    		println("Site ",i," Up");
-    		state.set(i,"Up");
-    		state.set(N-i,"Emp");
-    		p -= 1;
-    	}
-    	
-    	if(q > 1)
-    	{
-    		println("Site ",i+1," Dn");
-    		println("Site ",N-i+1," Dn");
-    		state.set(i+1,"Dn");
-    		state.set(N-i+1,"Dn");
-    		q -= 2;
-    	}
-    	else
-    	if(q > 0)
-    	{
-    		println("Site ",i+1," Dn");
-    		state.set(i+1,"Dn");
-    		state.set(N-i+1,"Emp");
-    		q -= 1;
-    	}
-    
-	}
-	**/	
     auto psi = IQMPS(state);
 
     Print(totalQN(psi));

@@ -1,5 +1,5 @@
 #include "itensor/all.h"
-#include "hubbard_h/hubbard_d3_divide.h"
+#include "hubbard_h/hubbard_d2_divide.h"
 #include <algorithm>
 #include <vector>
 #include <cmath>
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
     
     // Initialize the site degrees of freedom.
     //
-    auto sites = HubbardD3Divide(N);
+    auto sites = HubbardD2Divide(N);
     //
     // Create the Hamiltonian using AutoMPO
     //
@@ -163,19 +163,19 @@ int main(int argc, char* argv[])
 		ampo += -Jx,"Bdndag",i+3,"Bdn",i+7;
 		ampo += -Jx,"Bdndag",i+7,"Bdn",i+3;
         }
-	//if(PBC)
-	//{
-	//	// PBC
-	//	ampo += -Jx,"Bupdag",1,"Bup",N-3;
-	//	ampo += -Jx,"Bupdag",N-3,"Bup",1;
-	//	ampo += -Jx,"Bdndag",2,"Bdn",N-2;
-	//	ampo += -Jx,"Bdndag",N-2,"Bdn",2;
-   //
-	//	ampo += -Jx,"Bupdag",3,"Bup",N-1;
-	//	ampo += -Jx,"Bupdag",N-1,"Bup",3;
-	//	ampo += -Jx,"Bdndag",4,"Bdn",N;
-	//	ampo += -Jx,"Bdndag",N,"Bdn",4;
-	//}
+	if(PBC)
+	{
+		// PBC
+		ampo += -Jx,"Bupdag",1,"Bup",N-3;
+		ampo += -Jx,"Bupdag",N-3,"Bup",1;
+		ampo += -Jx,"Bdndag",2,"Bdn",N-2;
+		ampo += -Jx,"Bdndag",N-2,"Bdn",2;
+   
+		ampo += -Jx,"Bupdag",3,"Bup",N-1;
+		ampo += -Jx,"Bupdag",N-1,"Bup",3;
+		ampo += -Jx,"Bdndag",4,"Bdn",N;
+		ampo += -Jx,"Bdndag",N,"Bdn",4;
+	}
 	for(int i = 1; i<=N-1; i+=2)
 		{
 		ampo += Uuu/2,"Nup",i,"Nup",i;

@@ -12,6 +12,7 @@ input
     Uud = 5
 	phi = 0.4
 	PBC = no
+	ReadPsi = no
 	BudagBuPath = ../Data/Test/CorreFunBudagBu.txt
 	BuBudagPath = ../Data/Test/CorreFunBuBudag.txt
 	BddagBdPath = ../Data/Test/CorreFunBddagBd.txt

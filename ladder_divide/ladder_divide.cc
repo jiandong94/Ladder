@@ -1,5 +1,5 @@
 #include "itensor/all.h"
-#include "hubbard_h/hubbard_d2_divide.h"
+#include "hubbard_h/hubbard_d4_divide.h"
 #include <algorithm>
 #include <vector>
 #include <cmath>
@@ -122,17 +122,22 @@ int main(int argc, char* argv[])
 	phi = phi*PI;
     auto quiet = input.getYesNo("quiet",false);
     int writem = input.getYesNo("writem",false);
+    auto ReadPsi = input.getYesNo("ReadPsi",false);
     
     auto table = InputGroup(input,"sweeps");
     auto sweeps = Sweeps(nsweeps,table);
 	
     auto begin = input.getInt("begin");
     auto end = input.getInt("end");
-	auto BudagBuPath = input.getString("BudagBuPath");
-	auto BuBudagPath = input.getString("BuBudagPath");
-	auto BddagBdPath = input.getString("BddagBdPath");
-	auto BdBddagPath = input.getString("BdBddagPath");
-	auto NupNupPath = input.getString("NupNupPath");
+	std::string BudagBuPath, BuBudagPath, BddagBdPath, BdBddagPath, NupNupPath;
+	if(ReadPsi)
+	{
+	    BudagBuPath = input.getString("BudagBuPath");
+	    BuBudagPath = input.getString("BuBudagPath");
+	    BddagBdPath = input.getString("BddagBdPath");
+	    BdBddagPath = input.getString("BdBddagPath");
+	    NupNupPath = input.getString("NupNupPath");
+	}
 	auto SvNPath = input.getString("SvNPath");
 	auto NupPath = input.getString("NupPath");
 	auto NdnPath = input.getString("NdnPath");
@@ -146,8 +151,9 @@ int main(int argc, char* argv[])
     
     // Initialize the site degrees of freedom.
     //
-    auto sites = HubbardD2Divide(N);
-    //
+    auto sites = HubbardD4Divide(N);
+	if(ReadPsi) {readFromFile("sites_1",sites);}
+		
     // Create the Hamiltonian using AutoMPO
     //
     auto ampo = AutoMPO(sites);
@@ -163,19 +169,19 @@ int main(int argc, char* argv[])
 		ampo += -Jx,"Bdndag",i+3,"Bdn",i+7;
 		ampo += -Jx,"Bdndag",i+7,"Bdn",i+3;
         }
-	if(PBC)
-	{
-		// PBC
-		ampo += -Jx,"Bupdag",1,"Bup",N-3;
-		ampo += -Jx,"Bupdag",N-3,"Bup",1;
-		ampo += -Jx,"Bdndag",2,"Bdn",N-2;
-		ampo += -Jx,"Bdndag",N-2,"Bdn",2;
-   
-		ampo += -Jx,"Bupdag",3,"Bup",N-1;
-		ampo += -Jx,"Bupdag",N-1,"Bup",3;
-		ampo += -Jx,"Bdndag",4,"Bdn",N;
-		ampo += -Jx,"Bdndag",N,"Bdn",4;
-	}
+	//if(PBC)
+	//{
+	//	// PBC
+	//	ampo += -Jx,"Bupdag",1,"Bup",N-3;
+	//	ampo += -Jx,"Bupdag",N-3,"Bup",1;
+	//	ampo += -Jx,"Bdndag",2,"Bdn",N-2;
+	//	ampo += -Jx,"Bdndag",N-2,"Bdn",2;
+   //
+	//	ampo += -Jx,"Bupdag",3,"Bup",N-1;
+	//	ampo += -Jx,"Bupdag",N-1,"Bup",3;
+	//	ampo += -Jx,"Bdndag",4,"Bdn",N;
+	//	ampo += -Jx,"Bdndag",N,"Bdn",4;
+	//}
 	for(int i = 1; i<=N-1; i+=2)
 		{
 		ampo += Uuu/2,"Nup",i,"Nup",i;
@@ -197,34 +203,50 @@ int main(int argc, char* argv[])
     // Set the initial wavefunction matrix product state
     // to be a Neel state.
     //
-    auto state = InitState(sites);
-	std::vector<int> FillNup;
-	std::vector<int> FillNdn;
-	random_initial_state(N/2,Nup,FillNup);
-	random_initial_state(N/2,Ndn,FillNdn);
-	int p = Nup;
-    int q = Ndn;
-	for(int i = 1;i <= N; i++){state.set(i, "Emp");}
-	for(int i = 0;i < Nup;i++)
+	IQMPS psi(sites);
+	if(!ReadPsi)
 	{
-		state.set(FillNup[i]*2-1,"Up");
-    	println("Site ",FillNup[i]*2-1," Up");
-	}
-	for(int i = 0;i < Ndn;i++)
+        auto state = InitState(sites);
+	    std::vector<int> FillNup;
+	    std::vector<int> FillNdn;
+	    random_initial_state(N/2,Nup,FillNup);
+	    random_initial_state(N/2,Ndn,FillNdn);
+	    int p = Nup;
+        int q = Ndn;
+	    for(int i = 1;i <= N; i++){state.set(i, "Emp");}
+	    for(int i = 0;i < Nup;i++)
+	    {
+		    state.set(FillNup[i]*2-1,"Up");
+    	    println("Site ",FillNup[i]*2-1," Up");
+	    }
+	    for(int i = 0;i < Ndn;i++)
+	    {
+		    state.set(FillNdn[i]*2,"Dn");
+   		    println("Site ",FillNdn[i]*2," Dn");
+	    }
+        psi = IQMPS(state);
+    }
+	else
 	{
-		state.set(FillNdn[i]*2,"Dn");
-   		println("Site ",FillNdn[i]*2," Dn");
-	}
-    auto psi = IQMPS(state);
-
+	    readFromFile("psi_1",psi);
+    }
     Print(totalQN(psi));
 
     //
     // Begin the DMRG calculation
     //
     auto energy = dmrg(psi,H,sweeps,{"Quiet",quiet,"WriteM",writem});
-
-    //
+	if(ReadPsi)
+	{
+	    writeToFile("psi_2",psi);
+	    writeToFile("sites_2",sites);
+	}
+	else
+	{
+	    writeToFile("psi_1",psi);
+	    writeToFile("sites_1",sites);
+	}
+	//
     // Measure densities
     //
     //Vector upd(N),dnd(N);

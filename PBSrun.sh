@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -N U20
+#PBS -N U40_test
 #PBS -l nodes=1:ppn=8
 #PBS -l walltime=200:00:00
 #PBS -l mem=20G
@@ -8,13 +8,12 @@
 #PBS -V
 
 APP=ladder_d4
-INPUTFILE=inputfile_reU10_U20_first
-INPUTFILE2=inputfile_reU10_U20_second
+INPUTFILE=IF_test1
+INPUTFILE2=IF_test2
 
 
 # Number of processors
 NPROCS=`wc -l < $PBS_NODEFILE`
-echo $PBS_NODEFILE
 echo This job has allocated $NPROCS nodes
 #export OMP_NUM_THREADS=8
 
@@ -26,12 +25,17 @@ mkdir $WORKDIR
 cd $WORKDIR
 
 
-# Copy inputfile to workdir
-cp ../$INPUTFILE ./
-cp ../$INPUTFILE2 ./
+# Move APP and inputfile to workdir
+cp ../$APP ./
+mv ../$INPUTFILE ./
+mv ../$INPUTFILE2 ./
+
+# Get WriteFile Number
+WN1=`sed -n "/WriteNum\s*=\s*[0-9]*/p" $INPUTFILE | grep -o "[0-9]*"`
+WN2=`sed -n "/WriteNum\s*=\s*[0-9]*/p" $INPUTFILE2 | grep -o "[0-9]*"`
 
 date
-../$APP $INPUTFILE  2>&1 | tee o$ID\.$PBS_JOBNAME\_first
-../$APP $INPUTFILE2 2>&1 | tee o$ID\.$PBS_JOBNAME\_second
+./$APP $INPUTFILE  2>&1 | tee o$ID\.$PBS_JOBNAME\_$WN1
+./$APP $INPUTFILE2 2>&1 | tee o$ID\.$PBS_JOBNAME\_$WN2
 date
 

@@ -123,6 +123,8 @@ int main(int argc, char* argv[])
     auto quiet = input.getYesNo("quiet",false);
     int writem = input.getYesNo("writem",false);
     auto ReadPsi = input.getYesNo("ReadPsi",false);
+    auto ReadNum = input.getInt("ReadNum");
+    auto WriteNum = input.getInt("WriteNum");
     
     auto table = InputGroup(input,"sweeps");
     auto sweeps = Sweeps(nsweeps,table);
@@ -152,7 +154,7 @@ int main(int argc, char* argv[])
     // Initialize the site degrees of freedom.
     //
     auto sites = HubbardD4Divide(N);
-	if(ReadPsi) {readFromFile("sites_1",sites);}
+	if(ReadPsi) {readFromFile(format("sites_%d",ReadNum),sites);}
 		
     // Create the Hamiltonian using AutoMPO
     //
@@ -228,7 +230,7 @@ int main(int argc, char* argv[])
     }
 	else
 	{
-	    readFromFile("psi_1",psi);
+	    readFromFile(format("psi_%d",ReadNum),psi);
     }
     Print(totalQN(psi));
 
@@ -236,16 +238,9 @@ int main(int argc, char* argv[])
     // Begin the DMRG calculation
     //
     auto energy = dmrg(psi,H,sweeps,{"Quiet",quiet,"WriteM",writem});
-	if(ReadPsi)
-	{
-	    writeToFile("psi_2",psi);
-	    writeToFile("sites_2",sites);
-	}
-	else
-	{
-	    writeToFile("psi_1",psi);
-	    writeToFile("sites_1",sites);
-	}
+	
+	writeToFile(format("psi_%d",WriteNum),psi);
+	writeToFile(format("sites_%d",WriteNum),sites);
 	//
     // Measure densities
     //

@@ -1,14 +1,15 @@
 #!/bin/bash
-#PBS -N test
+#PBS -N U20
 #PBS -l nodes=1:ppn=8
 #PBS -l walltime=200:00:00
-#PBS -l mem=10G
+#PBS -l mem=20G
 #PBS -j oe
 #PBS -k oe
 #PBS -V
 
 APP=ladder_d4
-INPUTFILE=inputfile_ladder_test
+INPUTFILE=inputfile_reU10_U20_first
+INPUTFILE2=inputfile_reU10_U20_second
 
 
 # Number of processors
@@ -24,9 +25,13 @@ echo Working directory is $WORKDIR
 mkdir $WORKDIR
 cd $WORKDIR
 
+
 # Copy inputfile to workdir
 cp ../$INPUTFILE ./
+cp ../$INPUTFILE2 ./
 
 date
-../$APP $INPUTFILE 2>&1 | tee o$ID\.$PBS_JOBNAME
+../$APP $INPUTFILE  2>&1 | tee o$ID\.$PBS_JOBNAME\_first
+../$APP $INPUTFILE2 2>&1 | tee o$ID\.$PBS_JOBNAME\_second
 date
+

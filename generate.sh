@@ -15,7 +15,7 @@ echo "Leave ./$LD"
 
 
 # generate
-for((i=2;i<=5;i++))
+for((i=2;i<=6;i++))
 do
     if [ ! -d "ladder_d$i" ]
     then

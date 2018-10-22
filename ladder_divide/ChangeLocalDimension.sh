@@ -5,7 +5,7 @@ then
 	exit 1
 fi
 
-if [[ $1 -gt 5 || $1 -lt 2 ]]
+if [[ $1 -gt 6 || $1 -lt 2 ]]
 then
 	echo "Local dimension should >=2 and <= 5"
 	exit 1

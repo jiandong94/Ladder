@@ -317,19 +317,23 @@ int main(int argc, char* argv[])
 	auto StrOp2 = "Bup";
 	auto Down = 0;
 //omp_set_num_threads(4);
+	println("Calculating BupdagBup");
+    correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBudagBu, Down, begin, end, N, BudagBuPath);
+	println("================================");
 	
-	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBudagBu, Down, begin, end, N, BudagBuPath);
-	
-	
+	println("Calculating BupBupdag");
 	CMatrix CorreFunBuBudag(N/2,N/2);
 	StrOp1 = "Bup";
 	StrOp2 = "Bupdag";
 	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunBuBudag, Down, begin, end, N, BuBudagPath);
+	println("================================");
 	
+	println("Calculating NupNup");
 	CMatrix CorreFunNupNup(N/2,N/2);
 	StrOp1 = "Nup";
 	StrOp2 = "Nup";
 	correlation_function(psi, sites, StrOp1, StrOp2, CorreFunNupNup, Down, begin, end, N, NupNupPath);
+	println("================================");
 	//CMatrix CorreFunBddagBd(N/2,N/2);
 	//StrOp1 = "Bdndag";
 	//StrOp2 = "Bdn";
@@ -343,7 +347,6 @@ int main(int argc, char* argv[])
 	
 	double endTime = get_wall_time();
 	println("Correlation Functions Time : ", (double)(endTime-startTime), " s");
-	println("Correlation Functions:");
 	
 
 

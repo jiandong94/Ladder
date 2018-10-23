@@ -28,6 +28,7 @@ do
         ./ChangeLocalDimension.sh $i
         mv ladder_divide.cc ladder_d$i.cc
         sed -i "s/^APP=.*/APP=ladder_d$i/g" Makefile
+        make
         echo "Leave ladder_d$i"
         cd ..
     else

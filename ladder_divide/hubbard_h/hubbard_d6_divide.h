@@ -29,8 +29,8 @@ class HubbardSiteD6Divide
         auto conserveSz = args.getBool("ConserveSz",true);
         int Up = (conserveSz ? +1 : 0),
             Dn = -Up;
-		if(n%2 == 1) // up
-		{
+        if(n%2 == 1) // up
+        {
             s = IQIndex{nameint("site=",n),
                     Index(nameint("Emp ",n),1,Site), QN("Sz=", 0,"Nb=",0),
                     Index(nameint("Up ",n),1,Site),  QN("Sz=",1,"Nb=",1),
@@ -39,9 +39,9 @@ class HubbardSiteD6Divide
                     Index(nameint("U4 ",n),1,Site), QN("Sz=", 4,"Nb=",4),
                     Index(nameint("U5 ",n),1,Site), QN("Sz=", 5,"Nb=",5)};
 
-		}
-		else
-		{
+        }
+        else
+        {
             s = IQIndex{nameint("site=",n),
                     Index(nameint("Emp ",n),1,Site), QN("Sz=", 0,"Nb=",0),
                     Index(nameint("Dn ",n),1,Site), QN("Sz=", -1,"Nb=",1),
@@ -50,7 +50,7 @@ class HubbardSiteD6Divide
                     Index(nameint("D4 ",n),1,Site),  QN("Sz=",-4,"Nb=",4),
                     Index(nameint("D5 ",n),1,Site),  QN("Sz=",-5,"Nb=",5)};
 
-		}
+        }
         }
 
     IQIndex
@@ -95,9 +95,9 @@ class HubbardSiteD6Divide
         return IQIndexVal{};
         }
 
-	IQTensor
-	op(std::string const& opname,
-	   Args const& args) const
+    IQTensor
+    op(std::string const& opname,
+       Args const& args) const
         {
         auto sP = prime(s);
 

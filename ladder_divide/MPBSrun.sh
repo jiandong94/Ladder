@@ -25,6 +25,6 @@ cd $WORKDIR
 WN=`sed -n "/WriteNum\s*=\s*[0-9]*/p" $INPUTFILE | grep -o "[0-9]*"`
 
 date
-./$APP $INPUTFILE  2>&1 | tee o$ID\.$PBS_JOBNAME\_$WN
+./$APP $INPUTFILE  2>&1 | tee o${ID}.${PBS_JOBNAME}_$WN
 date
 

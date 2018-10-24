@@ -19,7 +19,7 @@ echo This job has allocated $NPROCS nodes
 
 # Creat workdir
 ID=`echo "$PBS_JOBID" | grep -o "^[0-9]*"`
-WORKDIR=$PBS_O_WORKDIR/$ID\_$PBS_JOBNAME
+WORKDIR=$PBS_O_WORKDIR/${ID}_$PBS_JOBNAME
 echo Working directory is $WORKDIR
 mkdir $WORKDIR
 cd $WORKDIR
@@ -35,7 +35,7 @@ WN1=`sed -n "/WriteNum\s*=\s*[0-9]*/p" $INPUTFILE | grep -o "[0-9]*"`
 WN2=`sed -n "/WriteNum\s*=\s*[0-9]*/p" $INPUTFILE2 | grep -o "[0-9]*"`
 
 date
-./$APP $INPUTFILE  2>&1 | tee o$ID\.$PBS_JOBNAME\_$WN1
-./$APP $INPUTFILE2 2>&1 | tee o$ID\.$PBS_JOBNAME\_$WN2
+./$APP $INPUTFILE  2>&1 | tee o${ID}.${PBS_JOBNAME}_$WN1
+./$APP $INPUTFILE2 2>&1 | tee o${ID}.${PBS_JOBNAME}_$WN2
 date
 

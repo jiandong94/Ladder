@@ -1,8 +1,0 @@
-#!/bin/bash
-
-cd ladder_divide
-make clean
-
-if [ ! -f "PH*" ]; then
-    echo "pls clean PH_* files"
-fi

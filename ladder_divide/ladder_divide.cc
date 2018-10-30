@@ -131,12 +131,11 @@ int main(int argc, char* argv[])
     
     auto begin = input.getInt("begin");
     auto end = input.getInt("end");
-    std::string BudagBuPath, BuBudagPath, BddagBdPath, BdBddagPath, NupNupPath;
-    BudagBuPath = input.getString("BudagBuPath");
-    BuBudagPath = input.getString("BuBudagPath");
-    BddagBdPath = input.getString("BddagBdPath");
-    BdBddagPath = input.getString("BdBddagPath");
-    NupNupPath = input.getString("NupNupPath");
+    auto BudagBuPath = input.getString("BudagBuPath");
+    auto BuBudagPath = input.getString("BuBudagPath");
+    auto BddagBdPath = input.getString("BddagBdPath");
+    auto BdBddagPath = input.getString("BdBddagPath");
+    auto NupNupPath = input.getString("NupNupPath");
     auto SvNPath = input.getString("SvNPath");
     auto NupPath = input.getString("NupPath");
     auto NdnPath = input.getString("NdnPath");
@@ -308,7 +307,6 @@ int main(int argc, char* argv[])
     outfileSvN.close();
 
 //-------------  Correlation Functions ------------------
-    if(ReadPsi){
     double startTime = get_wall_time();
     CMatrix CorreFunBudagBu(N/2,N/2);
     auto StrOp1 = "Bupdag";
@@ -345,7 +343,6 @@ int main(int argc, char* argv[])
     
     double endTime = get_wall_time();
     println("Correlation Functions Time : ", (double)(endTime-startTime), " s");
-    }
 
 
     // Print the final energy reported by DMRG

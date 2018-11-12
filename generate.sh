@@ -26,6 +26,7 @@ do
         echo "Copy file"
         cp -rf ../$LD/* ./
         ./ChangeLocalDimension.sh $i
+        rm ChangeLocalDimension.sh
         mv ladder_divide.cc ladder_d$i.cc
         sed -i "s/^APP=.*/APP=ladder_d$i/g" Makefile
         make

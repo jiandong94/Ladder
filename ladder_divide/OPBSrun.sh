@@ -16,6 +16,7 @@ NPROCS=`wc -l < $PBS_NODEFILE`
 echo This job has allocated $NPROCS nodes
 #export OMP_NUM_THREADS=8
 
+ID=`echo "$PBS_JOBID" | grep -o "^[0-9]*"`
 WORKDIR=$PBS_O_WORKDIR
 echo Working directory is $WORKDIR
 cd $WORKDIR

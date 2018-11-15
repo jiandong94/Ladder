@@ -26,7 +26,7 @@ int correlation_function(IQMPS psi, SiteSet sites, const std::string& StrOp1, co
     int K;
     for(int i=Down+1;i<=N-2;i+=2)
     {
-        IQMPS newPsi = psi;
+        IQMPS &newPsi = psi;
         newPsi.position(i);
         auto Op1 = sites.op(StrOp1,i); 
         IQTensor C = newPsi.A(i);
@@ -47,6 +47,61 @@ int correlation_function(IQMPS psi, SiteSet sites, const std::string& StrOp1, co
             K = i+4;
         }
         for(int j=i+2;j<=K;j+=2)
+        {
+            auto Op2 = sites.op(StrOp2,j);
+            if(j == i+2)
+            {
+                C *= newPsi.A(j-1);
+                C *= dag(prime(newPsi.A(j-1),Link));
+                
+                IQTensor CC = C*newPsi.A(j);
+                CC *= Op2;
+                auto jl = commonIndex(newPsi.A(j),newPsi.A(j-1),Link);
+                CC *= dag(prime(newPsi.A(j),jl,Site));
+                //CC *= dag(prime(prime(psi.A(j),Site),jl));
+                CorreFun((i-1)/2,(j-1)/2) = CC.cplx();
+            }
+            else
+            {
+                C *= newPsi.A(j-2);
+                C *= dag(prime(newPsi.A(j-2),Link));
+                C *= newPsi.A(j-1);
+                C *= dag(prime(newPsi.A(j-1),Link));
+                
+                ITensor CC = C*newPsi.A(j);
+                CC *= Op2;
+                auto il = commonIndex(newPsi.A(j),newPsi.A(j-1),Link);
+                CC *= dag(prime(prime(newPsi.A(j),Site),il));
+                CorreFun((i-1)/2,(j-1)/2) = CC.cplx();
+            }
+
+        }
+    }
+    std::ofstream outfile(outFile);
+    for(int i=1;i<=N/2-1;i++)
+    {
+        for(int j=i+1;j<=N/2;j++)
+        {
+            outfile << i << "," << j << " " << CorreFun(i-1,j-1) << std::endl;
+        }   
+    }
+
+    return 0;
+}
+int correlation_function_normal(IQMPS psi, SiteSet sites, const std::string& StrOp1, const std::string& StrOp2, CMatrix& CorreFun, int Down, int begin, int end, const int N, const std::string& outFile)
+{
+//#pragma omp parallel for 
+    for(int i=Down+(begin*2-1);i<=Down+(end*2-1);i+=2)
+    {
+        IQMPS &newPsi = psi;
+        newPsi.position(i);
+        auto Op1 = sites.op(StrOp1,i); 
+        IQTensor C = newPsi.A(i);
+        C *= Op1;
+        auto ir = commonIndex(newPsi.A(i),newPsi.A(i+1),Link);
+        C *= dag(prime(newPsi.A(i),Site,ir));
+        //C *= dag(prime(prime(psi.A(i),Site),ir)); // A*Op1*A_star
+        for(int j=i+2;j<=N;j+=2)
         {
             auto Op2 = sites.op(StrOp2,j);
             if(j == i+2)
@@ -173,7 +228,7 @@ int main(int argc, char* argv[])
     CMatrix CorreFunNupNup(N/2,N/2);
     StrOp1 = "Nup";
     StrOp2 = "Nup";
-    correlation_function(psi, sites, StrOp1, StrOp2, CorreFunNupNup, Down, begin, end, N, NupNupPath);
+    correlation_function_normal(psi, sites, StrOp1, StrOp2, CorreFunNupNup, Down, begin, end, N, NupNupPath);
     println("================================");
     endTime = get_wall_time();
     println("NupNup Time : ", (double)(endTime-startTime), " s");
